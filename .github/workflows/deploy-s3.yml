@@ -14,16 +14,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug OIDC claims
-        env:
-          ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
-          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
-        run: |
-          echo "OIDC token URL is available"
-          echo "Repository: $GITHUB_REPOSITORY"
-          echo "Repository ID: $GITHUB_REPOSITORY_ID"
-          echo "Repository Owner ID: $GITHUB_REPOSITORY_OWNER_ID"
-          echo "Branch: $GITHUB_REF"
+      - name: Check OIDC subject
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken('sts.amazonaws.com');
+            const claims = JSON.parse(
+              Buffer.from(token.split('.')[1], 'base64url').toString()
+            );
+            core.info(`Subject: ${claims.sub}`);
+            core.info(`Audience: ${claims.aud}`);
 
       - name: Checkout repository
         uses: actions/checkout@v4
