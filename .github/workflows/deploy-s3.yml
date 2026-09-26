@@ -15,9 +15,15 @@ jobs:
 
     steps:
       - name: Debug OIDC claims
-        uses: github/actions-oidc-debugger@main
-        with:
-          audience: sts.amazonaws.com
+        env:
+          ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
+        run: |
+          echo "OIDC token URL is available"
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Repository ID: $GITHUB_REPOSITORY_ID"
+          echo "Repository Owner ID: $GITHUB_REPOSITORY_OWNER_ID"
+          echo "Branch: $GITHUB_REF"
 
       - name: Checkout repository
         uses: actions/checkout@v4
